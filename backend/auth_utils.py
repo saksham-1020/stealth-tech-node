@@ -1,95 +1,24 @@
-# from jose import jwt, JWTError
-# from datetime import datetime, timedelta
-# from fastapi import Depends, HTTPException
-# from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-# from sqlalchemy.orm import Session
-# from database import SessionLocal
-# from models import User
-# import hashlib
-
-# SECRET = "STEALTH_AI_SECRET"
-# ALGO = "HS256"
-
-# ADMIN_EMAIL = "admin@gmail.com"
-# ADMIN_PASS = "admin123"
-
-# security = HTTPBearer()
-
-# # ===============================
-# # HASH PASSWORD
-# # ===============================
-# def hash_password(password: str):
-#     return hashlib.sha256(password.encode()).hexdigest()
-
-# # ===============================
-# # CREATE TOKEN
-# # ===============================
-# def create_token(data: dict):
-#     payload = data.copy()
-#     payload["exp"] = datetime.utcnow() + timedelta(days=7)
-#     return jwt.encode(payload, SECRET, algorithm=ALGO)
-
-# # ===============================
-# # VERIFY TOKEN
-# # ===============================
-# def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
-#     token = credentials.credentials
-
-#     try:
-#         payload = jwt.decode(token, SECRET, algorithms=[ALGO])
-#         return payload
-#     except JWTError:
-#         raise HTTPException(status_code=403, detail="Invalid or expired token")
-
-# # ===============================
-# # ADMIN GUARD
-# # ===============================
-# def admin_required(user=Depends(verify_token)):
-#     if user["role"] != "admin":
-#         raise HTTPException(status_code=403, detail="Admin access required")
-#     return user
-
-
-from jose import jwt, JWTError
+# auth_utils.py
 from datetime import datetime, timedelta
-from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-import hashlib
+from jose import jwt
+from passlib.context import CryptContext
 
-SECRET = "STEALTH_AI_SECRET"
-ALGO = "HS256"
+# ⚠️ Change this in production!
+SECRET_KEY = "STEALTH_LABS_SUPREME_SECRET_KEY_9988"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-security = HTTPBearer()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# ===============================
-# HASH PASSWORD
-# ===============================
-def hash_password(password: str):
-    return hashlib.sha256(password.encode()).hexdigest()
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
 
-# ===============================
-# CREATE TOKEN
-# ===============================
-def create_token(data: dict):
-    payload = data.copy()
-    payload["exp"] = datetime.utcnow() + timedelta(days=7)
-    return jwt.encode(payload, SECRET, algorithm=ALGO)
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
 
-# ===============================
-# VERIFY TOKEN
-# ===============================
-def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    token = credentials.credentials
-    try:
-        payload = jwt.decode(token, SECRET, algorithms=[ALGO])
-        return payload
-    except JWTError:
-        raise HTTPException(status_code=403, detail="Invalid or expired token")
-
-# ===============================
-# ADMIN GUARD
-# ===============================
-def admin_required(user=Depends(verify_token)):
-    if user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    return user
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
