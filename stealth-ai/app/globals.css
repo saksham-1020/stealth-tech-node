@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* Agar aapne custom scrollbar ya font-smoothing likha tha, toh usse niche rehne do */
+@layer base {
+  body {
+    @apply bg-[#020202] text-white antialiased;
+    overflow-x: hidden;
+  }
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#020202] text-white antialiased;
+    overflow-x: hidden;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ==========================================
+   ULTRA-PREMIUM CUSTOM SCROLLBAR
+========================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a; /* zinc-800 */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #06b6d4; /* cyan-500 glow on hover */
+}
