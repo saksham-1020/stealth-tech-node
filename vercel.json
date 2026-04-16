@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd stealth-ai && npm run build",
+  "installCommand": "cd stealth-ai && npm install --legacy-peer-deps",
+  "outputDirectory": "stealth-ai/.next"
+}
