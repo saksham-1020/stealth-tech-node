@@ -141,7 +141,16 @@
 
 import { COMPANY } from "@/lib/config";
 import Link from "next/link";
-import { Github, Twitter, Linkedin, Mail, ArrowUpRight, ShieldCheck, Fingerprint, Activity } from "lucide-react";
+import { 
+  Github, 
+  Linkedin, 
+  Twitter, 
+  Mail, 
+  ArrowUpRight, 
+  ShieldCheck, 
+  Fingerprint, 
+  Activity 
+} from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
